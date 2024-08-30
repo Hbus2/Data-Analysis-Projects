@@ -1,0 +1,82 @@
+import pandas as pd
+import numpy as np
+import random
+import string
+from IPython.display import display
+
+# Set random seed for reproducibility
+random.seed(42)
+
+# Lists of first and last names for generating realistic names
+first_names = ["Olivia", "Liam", "Emma", "Noah", "Ava", "Oliver", "Sophia", "Elijah", "Isabella", "James"]
+last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"]
+
+# Function to generate random client names
+def random_name():
+    return f"{random.choice(first_names)} {random.choice(last_names)}"
+
+# Function to generate random email addresses
+def random_email(name):
+    domains = ["gmail.com", "yahoo.com", "outlook.com"]
+    return f"{name.replace(' ', '.').lower()}@{random.choice(domains)}"
+
+# Generate product catalog
+products = {
+    1: "Foundation",
+    2: "Lipstick",
+    3: "Mascara",
+    4: "Eyeliner",
+    5: "Blush",
+    6: "Concealer",
+    7: "Eyeshadow Palette",
+    8: "Highlighter",
+    9: "Bronzer",
+    10: "Lip Gloss",
+    11: "Setting Spray",
+    12: "Primer",
+    13: "Brow Pencil",
+    14: "Lip Liner",
+    15: "Nail Polish"
+}
+
+# Generate random sales data for an entire year
+num_records = 1000
+
+# Generate random client names
+client_names = [random_name() for _ in range(num_records)]
+
+# Generate random product IDs
+product_ids = [random.choice(list(products.keys())) for _ in range(num_records)]
+
+# Create the data dictionary
+data = {
+    "Client_ID": [f"C{id:04d}" for id in range(1, num_records + 1)],
+    "Client_Name": client_names,
+    "Email": [random_email(name) for name in client_names],
+    "Phone_Number": [f"{random.randint(100, 999)}-{random.randint(100, 999)}-{random.randint(1000, 9999)}" for _ in range(num_records)],
+    "Product_ID": product_ids,
+    "Product_Name": [products[id] for id in product_ids],
+    "Quantity": [random.randint(1, 5) for _ in range(num_records)],
+    "Sale_Amount": [round(random.uniform(10, 100), 2) for _ in range(num_records)],
+    "Sale_Date": pd.date_range(start="2023-01-01", periods=num_records).to_list(),
+    "Location": [random.choice(["Online", "In-Store"]) for _ in range(num_records)]
+}
+
+# Convert the data dictionary to a DataFrame
+df = pd.DataFrame(data)
+
+# Save the DataFrame to a CSV file in the current directory
+file_name = "Cosmetic_Company_Sales.csv"
+df.to_csv(file_name, index=False)
+
+# Display basic statistics and summary information using IPython.display
+print("Basic Statistics:")
+display(df.describe(include='all'))
+
+print("\nSummary Information:")
+display(df.info())
+
+print("\nFirst 10 Rows of the DataFrame:")
+display(df.head(10))
+
+print(f"\nData exported to {file_name}")
